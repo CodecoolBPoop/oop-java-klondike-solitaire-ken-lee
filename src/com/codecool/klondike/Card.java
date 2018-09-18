@@ -9,7 +9,7 @@ import java.util.*;
 
 public class Card extends ImageView {
 
-    private int suit;
+    private Suit suit;
     private int rank;
     private boolean faceDown;
 
@@ -23,7 +23,7 @@ public class Card extends ImageView {
     public static final int WIDTH = 150;
     public static final int HEIGHT = 215;
 
-    public Card(int suit, int rank, boolean faceDown) {
+    public Card(Suit suit, int rank, boolean faceDown) {
         this.suit = suit;
         this.rank = rank;
         this.faceDown = faceDown;
@@ -34,7 +34,7 @@ public class Card extends ImageView {
         setEffect(dropShadow);
     }
 
-    public int getSuit() {
+    public Suit getSuit() {
         return suit;
     }
 
@@ -47,7 +47,7 @@ public class Card extends ImageView {
     }
 
     public String getShortName() {
-        return "S" + suit + "R" + rank;
+        return "S" + suit.getValue() + "R" + rank;
     }
 
     public DropShadow getDropShadow() {
@@ -88,9 +88,9 @@ public class Card extends ImageView {
 
     public static List<Card> createNewDeck() {
         List<Card> result = new ArrayList<>();
-        for (int suit = 1; suit < 5; suit++) {
-            for (int rank = 1; rank < 14; rank++) {
-                result.add(new Card(suit, rank, true));
+        for (Suit suit : Suit.values()) {
+            for (Rank rank : Rank.values()) {
+                result.add(new Card(suit, rank.getValue(), true));
             }
         }
         return result;
@@ -99,7 +99,7 @@ public class Card extends ImageView {
     public static void loadCardImages() {
         cardBackImage = new Image("card_images/card_back.png");
         String suitName = "";
-        for (int suit = 1; suit < 5; suit++) {
+/*        for (int suit = 1; suit < 5; suit++) {
             switch (suit) {
                 case 1:
                     suitName = "hearts";
@@ -120,6 +120,66 @@ public class Card extends ImageView {
                 String imageFileName = "card_images/" + cardName + ".png";
                 cardFaceImages.put(cardId, new Image(imageFileName));
             }
+        }
+        System.out.println(cardFaceImages.toString());*/
+
+        for (Suit suit : Suit.values()) {
+            for (Rank rank : Rank.values()) {
+                String cardName = suit.toString().toLowerCase() + rank.getValue();
+                String cardId = "S" + suit.getValue() + "R" + rank.getValue();
+                String imageFileName = "card_images/" + cardName + ".png";
+                cardFaceImages.put(cardId, new Image(imageFileName));
+            }
+
+        }
+        System.out.println(cardFaceImages.toString());
+
+    }
+
+
+
+    public enum Suit {
+        HEARTS(1),
+        DIAMONDS(2),
+        SPADES(3),
+        CLUBS(4);
+
+        private int value;
+
+        Suit(final int newValue) {
+            value = newValue;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+
+    }
+
+    public enum Rank {
+        DEUCE(1),
+        THREE(2),
+        FOUR(3),
+        FIVE(4),
+        SIX(5),
+        SEVEN(6),
+        EIGHT(7),
+        NINE(8),
+        TEN(9),
+        JACK(10),
+        QUEEN(11),
+        KING(12),
+        ACE(13);
+
+        private int value;
+
+        Rank(final int newValue) {
+            value = newValue;
+        }
+
+        public int getValue() {
+            return value;
         }
     }
 
