@@ -88,7 +88,22 @@ public class Game extends Pane {
             draggedCards.forEach(MouseUtil::slideBack);
             draggedCards.clear();
         }
+        Pile contPile = card.getContainingPile();
+        if (card.getContainingPile().getUnderTopCard().isFaceDown()) {
+            contPile.getUnderTopCard().flip();
+        }
     };
+
+    public void flipTopCard() {
+        for (Pile pile : tableauPiles) {
+            if (pile.isEmpty()) {
+                continue;
+            }
+            if (pile.getTopCard().isFaceDown()) {
+                pile.getTopCard().flip();
+            }
+        }
+    }
 
     public boolean isGameWon() {
         //TODO
@@ -212,7 +227,6 @@ public class Game extends Pane {
             addMouseEventHandlers(card);
             getChildren().add(card);
         });
-
     }
 
     public void setTableBackground(Image tableBackground) {
