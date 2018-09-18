@@ -83,7 +83,7 @@ public class Game extends Pane {
             handleValidMove(card, pile);
         } else {
             draggedCards.forEach(MouseUtil::slideBack);
-            draggedCards = null;
+            draggedCards.clear();
         }
     };
 
@@ -107,13 +107,14 @@ public class Game extends Pane {
 
     public void refillStockFromDiscard() {
         //TODO
+
         System.out.println("Stock refilled from discard pile.");
     }
 
     public boolean isMoveValid(Card card, Pile destPile) {
         //TODO done
         Card topCard = destPile.getTopCard();
-        return topCard == null ? true :
+        return topCard == null ? card.getRank() == Card.Rank.KING :
                 Card.isOppositeColor(card, topCard)
                 && topCard.getRank().getValue() - 1 == card.getRank().getValue();
     }
