@@ -115,7 +115,7 @@ public class Game extends Pane {
         Card topCard = destPile.getTopCard();
         return topCard == null ? true :
                 Card.isOppositeColor(card, topCard)
-                && topCard.getRank() - 1 == card.getRank();
+                && topCard.getRank().getValue() - 1 == card.getRank().getValue();
     }
 
     private Pile getValidIntersectingPile(Card card, List<Pile> piles) {

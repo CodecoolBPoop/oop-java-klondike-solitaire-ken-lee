@@ -10,7 +10,7 @@ import java.util.*;
 public class Card extends ImageView {
 
     private Suit suit;
-    private int rank;
+    private Rank rank;
     private boolean faceDown;
 
     private Image backFace;
@@ -23,7 +23,7 @@ public class Card extends ImageView {
     public static final int WIDTH = 150;
     public static final int HEIGHT = 215;
 
-    public Card(Suit suit, int rank, boolean faceDown) {
+    public Card(Suit suit, Rank rank, boolean faceDown) {
         this.suit = suit;
         this.rank = rank;
         this.faceDown = faceDown;
@@ -38,7 +38,7 @@ public class Card extends ImageView {
         return suit;
     }
 
-    public int getRank() {
+    public Rank getRank() {
         return rank;
     }
 
@@ -47,7 +47,7 @@ public class Card extends ImageView {
     }
 
     public String getShortName() {
-        return "S" + suit.getValue() + "R" + rank;
+        return "S" + suit.getValue() + "R" + rank.getValue();
     }
 
     public DropShadow getDropShadow() {
@@ -79,7 +79,8 @@ public class Card extends ImageView {
 
     public static boolean isOppositeColor(Card card1, Card card2) {
         //TODO done
-        return Math.max(card1.suit, card2.suit) > 2 && Math.min(card1.suit, card2.suit) < 3;
+        return Math.max(card1.suit.getValue(), card2.suit.getValue()) > 2 &&
+                Math.min(card1.suit.getValue(), card2.suit.getValue()) < 3;
     }
 
     public static boolean isSameSuit(Card card1, Card card2) {
@@ -90,7 +91,7 @@ public class Card extends ImageView {
         List<Card> result = new ArrayList<>();
         for (Suit suit : Suit.values()) {
             for (Rank rank : Rank.values()) {
-                result.add(new Card(suit, rank.getValue(), true));
+                result.add(new Card(suit, rank, true));
             }
         }
         return result;
@@ -130,10 +131,7 @@ public class Card extends ImageView {
                 String imageFileName = "card_images/" + cardName + ".png";
                 cardFaceImages.put(cardId, new Image(imageFileName));
             }
-
         }
-        System.out.println(cardFaceImages.toString());
-
     }
 
 
