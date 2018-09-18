@@ -79,7 +79,8 @@ public class Card extends ImageView {
 
     public static boolean isOppositeColor(Card card1, Card card2) {
         //TODO done
-        return Math.max(card1.suit, card2.suit) > 2 && Math.min(card1.suit, card2.suit) < 3;
+        return Math.max(card1.suit.getValue(), card2.suit.getValue()) > 2
+                && Math.min(card1.suit.getValue(), card2.suit.getValue()) < 3;
     }
 
     public static boolean isSameSuit(Card card1, Card card2) {
