@@ -93,7 +93,7 @@ public class Card extends ImageView {
                 result.add(new Card(suit, rank, true));
             }
         }
-        System.out.println(result.toString());
+        Collections.shuffle(result);
         return result;
     }
 
