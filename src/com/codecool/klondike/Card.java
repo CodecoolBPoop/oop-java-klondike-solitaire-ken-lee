@@ -78,8 +78,9 @@ public class Card extends ImageView {
     }
 
     public static boolean isOppositeColor(Card card1, Card card2) {
-        //TODO
-        return true;
+        //TODO done
+        return Math.max(card1.suit.getValue(), card2.suit.getValue()) > 2 &&
+                Math.min(card1.suit.getValue(), card2.suit.getValue()) < 3;
     }
 
     public static boolean isSameSuit(Card card1, Card card2) {
@@ -93,7 +94,6 @@ public class Card extends ImageView {
                 result.add(new Card(suit, rank, true));
             }
         }
-        System.out.println(result.toString());
         return result;
     }
 
@@ -156,19 +156,19 @@ public class Card extends ImageView {
     }
 
     public enum Rank {
-        DEUCE(1),
-        THREE(2),
-        FOUR(3),
-        FIVE(4),
-        SIX(5),
-        SEVEN(6),
-        EIGHT(7),
-        NINE(8),
-        TEN(9),
-        JACK(10),
-        QUEEN(11),
-        KING(12),
-        ACE(13);
+        ACE(1),
+        DEUCE(2),
+        THREE(3),
+        FOUR(4),
+        FIVE(5),
+        SIX(6),
+        SEVEN(7),
+        EIGHT(8),
+        NINE(9),
+        TEN(10),
+        JACK(11),
+        QUEEN(12),
+        KING(13);
 
         private int value;
 
