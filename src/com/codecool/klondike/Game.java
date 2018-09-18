@@ -113,7 +113,7 @@ public class Game extends Pane {
     public boolean isMoveValid(Card card, Pile destPile) {
         //TODO done
         Card topCard = destPile.getTopCard();
-        return topCard == null ? true :
+        return topCard == null ? card.getRank() == Card.Rank.KING :
                 Card.isOppositeColor(card, topCard)
                 && topCard.getRank().getValue() - 1 == card.getRank().getValue();
     }
