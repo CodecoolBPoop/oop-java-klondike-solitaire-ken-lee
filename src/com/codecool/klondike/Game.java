@@ -84,11 +84,11 @@ public class Game extends Pane {
         //TODO
         if (pile != null) {
             handleValidMove(card, pile);
+            flipTopCard(card);
         } else {
             draggedCards.forEach(MouseUtil::slideBack);
             draggedCards.clear();
         }
-        flipTopCard(card);
     };
 
     public void flipTopCard(Card card) {
