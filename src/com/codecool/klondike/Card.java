@@ -25,7 +25,7 @@ public class Card extends ImageView {
 
     public Card(Suit suit, int rank, boolean faceDown) {
         this.suit = suit;
-        this.rank = Rank.getValue();
+        this.rank = rank;
         this.faceDown = faceDown;
         this.dropShadow = new DropShadow(2, Color.gray(0, 0.75));
         backFace = cardBackImage;
@@ -39,7 +39,7 @@ public class Card extends ImageView {
     }
 
     public int getRank() {
-        return Rank.getValue();
+        return rank;
     }
 
     public boolean isFaceDown() {
@@ -47,7 +47,7 @@ public class Card extends ImageView {
     }
 
     public String getShortName() {
-        return "S" + suit + "R" + rank;
+        return "S" + suit.getValue() + "R" + rank;
     }
 
     public DropShadow getDropShadow() {
@@ -99,8 +99,7 @@ public class Card extends ImageView {
     public static void loadCardImages() {
         cardBackImage = new Image("card_images/card_back.png");
         String suitName = "";
-/*
-        for (int suit = 1; suit < 5; suit++) {
+/*        for (int suit = 1; suit < 5; suit++) {
             switch (suit) {
                 case 1:
                     suitName = "hearts";
@@ -122,25 +121,40 @@ public class Card extends ImageView {
                 cardFaceImages.put(cardId, new Image(imageFileName));
             }
         }
-*/
+        System.out.println(cardFaceImages.toString());*/
+
         for (Suit suit : Suit.values()) {
             for (Rank rank : Rank.values()) {
                 String cardName = suit.toString().toLowerCase() + rank.getValue();
-                String cardId = "S" + suit.toString().toLowerCase() + "R" + rank.getValue();
+                String cardId = "S" + suit.getValue() + "R" + rank.getValue();
                 String imageFileName = "card_images/" + cardName + ".png";
                 cardFaceImages.put(cardId, new Image(imageFileName));
             }
 
         }
+        System.out.println(cardFaceImages.toString());
+
     }
 
 
 
     public enum Suit {
-        HEARTS,
-        DIAMONDS,
-        SPADES,
-        CLUBS
+        HEARTS(1),
+        DIAMONDS(2),
+        SPADES(3),
+        CLUBS(4);
+
+        private int value;
+
+        Suit(final int newValue) {
+            value = newValue;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+
     }
 
     public enum Rank {
