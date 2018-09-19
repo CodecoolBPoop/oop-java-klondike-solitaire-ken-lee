@@ -44,6 +44,10 @@ public class Pile extends Pane {
         return cards.isEmpty();
     }
 
+    public int getIndexOfCard(Card card) {
+        return cards.indexOf(card);
+    }
+
     public void clear() {
         //TODO
         cards.clear();

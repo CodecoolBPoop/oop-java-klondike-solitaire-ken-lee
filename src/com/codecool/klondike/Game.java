@@ -59,21 +59,27 @@ public class Game extends Pane {
     private EventHandler<MouseEvent> onMouseDraggedHandler = e -> {
         Card card = (Card) e.getSource();
         Pile activePile = card.getContainingPile();
-        if (activePile.getPileType() == Pile.PileType.STOCK)
+        if (activePile.getPileType() == Pile.PileType.STOCK || card.isFaceDown())
             return;
         double offsetX = e.getSceneX() - dragStartX;
         double offsetY = e.getSceneY() - dragStartY;
 
         draggedCards.clear();
-        draggedCards.add(card);
+        List<Card> consecutiveCards = activePile
+                                      .getCards()
+                                      .subList(activePile.getIndexOfCard(card), activePile.numOfCards());
 
-        card.getDropShadow().setRadius(20);
-        card.getDropShadow().setOffsetX(10);
-        card.getDropShadow().setOffsetY(10);
+        for (Card currentCard: consecutiveCards) {
+            draggedCards.add(currentCard);
 
-        card.toFront();
-        card.setTranslateX(offsetX);
-        card.setTranslateY(offsetY);
+            currentCard.getDropShadow().setRadius(20);
+            currentCard.getDropShadow().setOffsetX(10);
+            currentCard.getDropShadow().setOffsetY(10);
+
+            currentCard.toFront();
+            currentCard.setTranslateX(offsetX);
+            currentCard.setTranslateY(offsetY);
+        }
     };
 
     private EventHandler<MouseEvent> onMouseReleasedHandler = e -> {
@@ -133,9 +139,10 @@ public class Game extends Pane {
     public boolean isMoveValid(Card card, Pile destPile) {
         //TODO done
         Card topCard = destPile.getTopCard();
-        return topCard == null ? card.getRank() == Card.Rank.KING :
-                Card.isOppositeColor(card, topCard)
-                && topCard.getRank().getValue() - 1 == card.getRank().getValue();
+        return true;
+//        return topCard == null ? card.getRank() == Card.Rank.KING :
+//                Card.isOppositeColor(card, topCard)
+//                && topCard.getRank().getValue() - 1 == card.getRank().getValue();
     }
 
     private Pile getValidIntersectingPile(Card card, List<Pile> piles) {
