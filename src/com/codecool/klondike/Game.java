@@ -99,7 +99,7 @@ public class Game extends Pane {
 
     public void flipTopCard(Card card) {
         Pile contPile = card.getContainingPile();
-        if (card.getContainingPile().getUnderTopCard().isFaceDown()) {
+        if (card.getContainingPile().getUnderTopCard().isFaceDown() && !contPile.isEmpty()) {
             contPile.getUnderTopCard().flip();
         }
     }
@@ -139,10 +139,9 @@ public class Game extends Pane {
     public boolean isMoveValid(Card card, Pile destPile) {
         //TODO done
         Card topCard = destPile.getTopCard();
-        return true;
-//        return topCard == null ? card.getRank() == Card.Rank.KING :
-//                Card.isOppositeColor(card, topCard)
-//                && topCard.getRank().getValue() - 1 == card.getRank().getValue();
+        return topCard == null ? card.getRank() == Card.Rank.KING :
+                Card.isOppositeColor(card, topCard)
+                && topCard.getRank().getValue() - 1 == card.getRank().getValue();
     }
 
     private Pile getValidIntersectingPile(Card card, List<Pile> piles) {
