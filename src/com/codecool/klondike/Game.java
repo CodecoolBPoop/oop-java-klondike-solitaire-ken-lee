@@ -99,7 +99,9 @@ public class Game extends Pane {
 
     public void flipTopCard(Card card) {
         Pile contPile = card.getContainingPile();
-        if (card.getContainingPile().getUnderTopCard().isFaceDown() && !contPile.isEmpty()) {
+        if (contPile.isEmpty())
+            return;
+        if (card.getContainingPile().getUnderTopCard().isFaceDown()) {
             contPile.getUnderTopCard().flip();
         }
     }
