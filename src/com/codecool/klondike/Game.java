@@ -39,7 +39,8 @@ public class Game extends Pane {
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
         Card card = (Card) e.getSource();
-        if (card.getContainingPile().getPileType() == Pile.PileType.STOCK) {
+        if (card.getContainingPile().getPileType() == Pile.PileType.STOCK &&
+                card.getContainingPile().getCards().indexOf(card) == card.getContainingPile().numOfCards() - 1) {
             card.moveToPile(discardPile);
             card.flip();
             card.setMouseTransparent(false);
@@ -59,12 +60,17 @@ public class Game extends Pane {
     private EventHandler<MouseEvent> onMouseDraggedHandler = e -> {
         Card card = (Card) e.getSource();
         Pile activePile = card.getContainingPile();
-        if (activePile.getPileType() == Pile.PileType.STOCK || card.isFaceDown())
+        if (activePile.getPileType().equals(Pile.PileType.STOCK) || card.isFaceDown())
             return;
+        if(activePile.getPileType().equals(Pile.PileType.DISCARD) &&
+                activePile.getCards().indexOf(card) < activePile.numOfCards() - 1)
+            return;
+
         double offsetX = e.getSceneX() - dragStartX;
         double offsetY = e.getSceneY() - dragStartY;
 
         draggedCards.clear();
+
         List<Card> consecutiveCards = activePile
                                       .getCards()
                                       .subList(activePile.getCards().indexOf(card), activePile.numOfCards());
