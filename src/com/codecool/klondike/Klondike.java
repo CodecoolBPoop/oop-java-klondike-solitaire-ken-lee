@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+
 public class Klondike extends Application {
 
     private static final double WINDOW_WIDTH = 1400;

@@ -39,7 +39,8 @@ public class Game extends Pane {
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
         Card card = (Card) e.getSource();
-        if (card.getContainingPile().getPileType() == Pile.PileType.STOCK) {
+        if (card.getContainingPile().getPileType() == Pile.PileType.STOCK &&
+                card.getContainingPile().getCards().indexOf(card) == card.getContainingPile().numOfCards() - 1) {
             card.moveToPile(discardPile);
             card.flip();
             card.setMouseTransparent(false);
@@ -59,21 +60,32 @@ public class Game extends Pane {
     private EventHandler<MouseEvent> onMouseDraggedHandler = e -> {
         Card card = (Card) e.getSource();
         Pile activePile = card.getContainingPile();
-        if (activePile.getPileType() == Pile.PileType.STOCK)
+        if (activePile.getPileType().equals(Pile.PileType.STOCK) || card.isFaceDown())
             return;
+        if(activePile.getPileType().equals(Pile.PileType.DISCARD) &&
+                activePile.getCards().indexOf(card) < activePile.numOfCards() - 1)
+            return;
+
         double offsetX = e.getSceneX() - dragStartX;
         double offsetY = e.getSceneY() - dragStartY;
 
         draggedCards.clear();
-        draggedCards.add(card);
 
-        card.getDropShadow().setRadius(20);
-        card.getDropShadow().setOffsetX(10);
-        card.getDropShadow().setOffsetY(10);
+        List<Card> consecutiveCards = activePile
+                                      .getCards()
+                                      .subList(activePile.getCards().indexOf(card), activePile.numOfCards());
 
-        card.toFront();
-        card.setTranslateX(offsetX);
-        card.setTranslateY(offsetY);
+        for (Card currentCard: consecutiveCards) {
+            draggedCards.add(currentCard);
+
+            currentCard.getDropShadow().setRadius(20);
+            currentCard.getDropShadow().setOffsetX(10);
+            currentCard.getDropShadow().setOffsetY(10);
+
+            currentCard.toFront();
+            currentCard.setTranslateX(offsetX);
+            currentCard.setTranslateY(offsetY);
+        }
     };
 
     private EventHandler<MouseEvent> onMouseReleasedHandler = e -> {
@@ -95,10 +107,11 @@ public class Game extends Pane {
     };
 
     public void flipTopCard(Card card) {
-        Pile contPile = card.getContainingPile();
-        if (card.getContainingPile().getUnderTopCard().isFaceDown()) {
-            contPile.getUnderTopCard().flip();
-        }
+        List<Card> contPile = card.getContainingPile().getCards();
+        Card topCard = contPile.indexOf(card) > 0 ? contPile.get(contPile.indexOf(card) -1) : null;
+        if (topCard != null)
+            if (topCard.isFaceDown())
+                topCard.flip();
     }
 
     public boolean isGameWon() {
