@@ -133,9 +133,13 @@ public class Game extends Pane {
     public boolean isMoveValid(Card card, Pile destPile) {
         //TODO done
         Card topCard = destPile.getTopCard();
-        return topCard == null ? card.getRank() == Card.Rank.KING :
+        if (destPile.getPileType() == Pile.PileType.TABLEAU)
+            return topCard == null ? card.getRank() == Card.Rank.KING :
                 Card.isOppositeColor(card, topCard)
                 && topCard.getRank().getValue() - 1 == card.getRank().getValue();
+        return topCard == null ? card.getRank() == Card.Rank.ACE :
+                Card.isSameSuit(card, topCard)
+                && topCard.getRank().getValue() + 1 == card.getRank().getValue();
     }
 
     private Pile getValidIntersectingPile(Card card, List<Pile> piles) {
