@@ -84,11 +84,19 @@ public class Game extends Pane {
         //TODO
         if (pile != null) {
             handleValidMove(card, pile);
+            flipTopCard(card);
         } else {
             draggedCards.forEach(MouseUtil::slideBack);
             draggedCards.clear();
         }
     };
+
+    public void flipTopCard(Card card) {
+        Pile contPile = card.getContainingPile();
+        if (card.getContainingPile().getUnderTopCard().isFaceDown()) {
+            contPile.getUnderTopCard().flip();
+        }
+    }
 
     public boolean isGameWon() {
         //TODO
@@ -198,13 +206,20 @@ public class Game extends Pane {
 
     public void dealCards() {
         Iterator<Card> deckIterator = deck.iterator();
-        //TODO
+        for (int i = 0; i < tableauPiles.size(); i++) {
+            for (int j = 0; j <= i; j++) {
+                Card card = deckIterator.next();
+                tableauPiles.get(i).addCard(card);
+                addMouseEventHandlers(card);
+                getChildren().add(card);
+            }
+            tableauPiles.get(i).getTopCard().flip();
+        }
         deckIterator.forEachRemaining(card -> {
             stockPile.addCard(card);
             addMouseEventHandlers(card);
             getChildren().add(card);
         });
-
     }
 
     public void setTableBackground(Image tableBackground) {

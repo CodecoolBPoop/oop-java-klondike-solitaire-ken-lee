@@ -8,9 +8,6 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
-import java.util.List;
-import java.util.ListIterator;
-
 public class Pile extends Pane {
 
     private PileType pileType;
@@ -40,8 +37,7 @@ public class Pile extends Pane {
     }
 
     public int numOfCards() {
-        //TODO
-        return 1;
+        return cards.size();
     }
 
     public boolean isEmpty() {
@@ -74,6 +70,14 @@ public class Pile extends Pane {
         else
             return cards.get(cards.size() - 1);
     }
+
+    public Card getUnderTopCard() {
+        if (cards.isEmpty())
+            return null;
+        else
+            return cards.get(cards.size() - 2);
+    }
+
 
     public void setBlurredBackground() {
         setPrefSize(Card.WIDTH, Card.HEIGHT);
