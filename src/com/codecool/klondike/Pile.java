@@ -44,9 +44,6 @@ public class Pile extends Pane {
         return cards.isEmpty();
     }
 
-    public int getIndexOfCard(Card card) {
-        return cards.indexOf(card);
-    }
 
     public void clear() {
         //TODO
@@ -75,11 +72,11 @@ public class Pile extends Pane {
             return cards.get(cards.size() - 1);
     }
 
-    public Card getUnderTopCard() {
+    public Card getCardUnderDrag(Card draggedCard) {
         if (cards.isEmpty())
             return null;
         else
-            return cards.get(cards.size() - 2);
+            return cards.get(cards.indexOf(draggedCard) -1);
     }
 
 

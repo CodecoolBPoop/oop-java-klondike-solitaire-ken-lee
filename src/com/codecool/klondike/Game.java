@@ -67,7 +67,7 @@ public class Game extends Pane {
         draggedCards.clear();
         List<Card> consecutiveCards = activePile
                                       .getCards()
-                                      .subList(activePile.getIndexOfCard(card), activePile.numOfCards());
+                                      .subList(activePile.getCards().indexOf(card), activePile.numOfCards());
 
         for (Card currentCard: consecutiveCards) {
             draggedCards.add(currentCard);
@@ -98,12 +98,11 @@ public class Game extends Pane {
     };
 
     public void flipTopCard(Card card) {
-        Pile contPile = card.getContainingPile();
-        if (contPile.isEmpty())
-            return;
-        if (card.getContainingPile().getUnderTopCard().isFaceDown()) {
-            contPile.getUnderTopCard().flip();
-        }
+        List<Card> contPile = card.getContainingPile().getCards();
+        Card topCard = contPile.indexOf(card) > 0 ? contPile.get(contPile.indexOf(card) -1) : null;
+        if (topCard != null)
+            if (topCard.isFaceDown())
+                topCard.flip();
     }
 
     public boolean isGameWon() {
