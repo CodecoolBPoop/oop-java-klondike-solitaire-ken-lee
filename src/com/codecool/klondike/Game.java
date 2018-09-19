@@ -2,6 +2,8 @@ package com.codecool.klondike;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableArray;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
@@ -14,6 +16,7 @@ import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -81,11 +84,19 @@ public class Game extends Pane {
         //TODO
         if (pile != null) {
             handleValidMove(card, pile);
+            flipTopCard(card);
         } else {
             draggedCards.forEach(MouseUtil::slideBack);
-            //draggedCards = null;
+            draggedCards.clear();
         }
     };
+
+    public void flipTopCard(Card card) {
+        Pile contPile = card.getContainingPile();
+        if (card.getContainingPile().getUnderTopCard().isFaceDown()) {
+            contPile.getUnderTopCard().flip();
+        }
+    }
 
     public boolean isGameWon() {
         //TODO
@@ -107,6 +118,15 @@ public class Game extends Pane {
 
     public void refillStockFromDiscard() {
         //TODO
+        if (stockPile.isEmpty()){
+            ObservableList<Card> reverseCards = discardPile.getCards();
+            FXCollections.reverse(reverseCards);
+            for(Card card : reverseCards){
+                card.flip();
+                stockPile.addCard(card);
+            }
+            discardPile.clear();
+        }
         System.out.println("Stock refilled from discard pile.");
     }
 
@@ -186,13 +206,20 @@ public class Game extends Pane {
 
     public void dealCards() {
         Iterator<Card> deckIterator = deck.iterator();
-        //TODO
+        for (int i = 0; i < tableauPiles.size(); i++) {
+            for (int j = 0; j <= i; j++) {
+                Card card = deckIterator.next();
+                tableauPiles.get(i).addCard(card);
+                addMouseEventHandlers(card);
+                getChildren().add(card);
+            }
+            tableauPiles.get(i).getTopCard().flip();
+        }
         deckIterator.forEachRemaining(card -> {
             stockPile.addCard(card);
             addMouseEventHandlers(card);
             getChildren().add(card);
         });
-
     }
 
     public void setTableBackground(Image tableBackground) {
