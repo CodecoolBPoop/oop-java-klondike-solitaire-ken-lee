@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
@@ -128,6 +129,15 @@ public class Game extends Pane {
         }
     };
 
+    private EventHandler<MouseEvent> onMouseDoubleClickHandler = e -> {
+        Card card = (Card) e.getSource();
+        if(e.getButton().equals(MouseButton.PRIMARY)) {
+            if (e.getClickCount() == 2) {
+                System.out.println("Double clicked");
+            }
+        }
+    };
+
     public void flipTopCard(Card card) {
         List<Card> contPile = card.getContainingPile().getCards();
         Card topCard = contPile.indexOf(card) > 0 ? contPile.get(contPile.indexOf(card) -1) : null;
@@ -138,7 +148,11 @@ public class Game extends Pane {
 
     public boolean isGameWon() {
         //TODO
-        return false;
+        for (Pile pile : foundationPiles) {
+            if (pile.numOfCards() != 13)
+                return false;
+        }
+        return true;
     }
 
     public void restart() {
@@ -165,6 +179,7 @@ public class Game extends Pane {
         card.setOnMouseDragged(onMouseDraggedHandler);
         card.setOnMouseReleased(onMouseReleasedHandler);
         card.setOnMouseClicked(onMouseClickedHandler);
+        card.setOnMouseClicked(onMouseDoubleClickHandler);
     }
 
     public void refillStockFromDiscard() {
