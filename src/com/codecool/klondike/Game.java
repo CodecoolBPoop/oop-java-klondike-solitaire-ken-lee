@@ -276,8 +276,12 @@ public class Game extends Pane {
         System.out.println(msg);
 
         undoPile = card.getContainingPile();
-        if (undoPile.numOfCards() > 2) wasTopCardFlippedUp = undoPile.getCards().get(undoPile.numOfCards() - 2).isFaceDown();
         undoCards = FXCollections.observableArrayList(draggedCards);
+
+        int indexOfCardUnderDragged = undoPile.getCards().indexOf(undoCards.get(0));
+        wasTopCardFlippedUp = undoPile.numOfCards() - undoCards.size() > 1 ?
+                undoPile.getCards().get(indexOfCardUnderDragged -1).isFaceDown() : undoPile.getCards().get(0).isFaceDown();
+
         MouseUtil.slideToDest(draggedCards, destPile);
         draggedCards.clear();
     }
