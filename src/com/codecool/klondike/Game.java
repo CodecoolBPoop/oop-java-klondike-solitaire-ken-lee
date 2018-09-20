@@ -34,6 +34,7 @@ public class Game extends Pane {
     private List<Card> draggedCards = FXCollections.observableArrayList();
     private List<Card> undoCards;
     private Pile undoPile;
+    private boolean wasTopCardFlippedUp;
 
     private Scene scene;
 
@@ -60,7 +61,9 @@ public class Game extends Pane {
     private EventHandler<MouseEvent> undoBtnClickedHandler = e -> {
         if (undoCards == null)
             return;
+
         if (undoPile.getTopCard() != null
+                && wasTopCardFlippedUp
                 && !undoCards.isEmpty()
                 && undoPile.getPileType() != Pile.PileType.DISCARD)
             undoPile.getTopCard().flip();
@@ -267,6 +270,7 @@ public class Game extends Pane {
         System.out.println(msg);
 
         undoPile = card.getContainingPile();
+        if (undoPile.numOfCards() > 2) wasTopCardFlippedUp = undoPile.getCards().get(undoPile.numOfCards() - 2).isFaceDown();
         undoCards = FXCollections.observableArrayList(draggedCards);
         MouseUtil.slideToDest(draggedCards, destPile);
         draggedCards.clear();
