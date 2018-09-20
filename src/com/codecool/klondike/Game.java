@@ -5,7 +5,9 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableArray;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -34,6 +36,8 @@ public class Game extends Pane {
     private List<Card> undoCards;
     private Pile undoPile;
 
+    private Scene scene;
+
     private static double STOCK_GAP = 1;
     private static double FOUNDATION_GAP = 0;
     private static double TABLEAU_GAP = 30;
@@ -60,6 +64,10 @@ public class Game extends Pane {
             card.setMouseTransparent(false);
             System.out.println("Placed " + card + " to the waste.");
         }
+    };
+
+    private EventHandler<MouseEvent> buttonClickedHandler =  e -> {
+        restart();
     };
 
     private EventHandler<MouseEvent> stockReverseCardsHandler = e -> {
@@ -107,7 +115,7 @@ public class Game extends Pane {
             return;
         Card card = (Card) e.getSource();
         Pile pile = getValidIntersectingPile(card, tableauPiles);
-        if(pile == null){
+        if(pile == null && draggedCards.size() == 1){
             pile = getValidIntersectingPile(card, foundationPiles);
         }
         //TODO
@@ -131,6 +139,17 @@ public class Game extends Pane {
     public boolean isGameWon() {
         //TODO
         return false;
+    }
+
+    public void restart() {
+        getChildren().clear();
+        deck.clear();
+        discardPile.clear();
+        foundationPiles.clear();
+        tableauPiles.clear();
+        deck = Card.createNewDeck();
+        initPiles();
+        dealCards();
     }
 
     public Game() {
@@ -230,6 +249,12 @@ public class Game extends Pane {
         discardPile.setLayoutX(285);
         discardPile.setLayoutY(20);
         getChildren().add(discardPile);
+
+        Button button = new Button("Restart");
+        button.setLayoutX(475);
+        button.setLayoutY(20);
+        button.setOnMouseClicked(buttonClickedHandler);
+        getChildren().add(button);
 
         for (int i = 0; i < 4; i++) {
             Pile foundationPile = new Pile(Pile.PileType.FOUNDATION, "Foundation " + i, FOUNDATION_GAP);
