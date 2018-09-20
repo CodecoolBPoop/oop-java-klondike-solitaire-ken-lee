@@ -150,6 +150,7 @@ public class Game extends Pane {
         deck = Card.createNewDeck();
         initPiles();
         dealCards();
+        addButtons();
     }
 
     public Game() {
@@ -234,6 +235,13 @@ public class Game extends Pane {
         undoBtn.setLayoutY(30);
         getChildren().add(undoBtn);
         undoBtn.setOnMouseClicked(undoBtnClickedHandler);
+
+
+        Button button = new Button("Restart");
+        button.setLayoutX(475);
+        button.setLayoutY(20);
+        button.setOnMouseClicked(buttonClickedHandler);
+        getChildren().add(button);
     }
 
     private void initPiles() {
@@ -249,12 +257,6 @@ public class Game extends Pane {
         discardPile.setLayoutX(285);
         discardPile.setLayoutY(20);
         getChildren().add(discardPile);
-
-        Button button = new Button("Restart");
-        button.setLayoutX(475);
-        button.setLayoutY(20);
-        button.setOnMouseClicked(buttonClickedHandler);
-        getChildren().add(button);
 
         for (int i = 0; i < 4; i++) {
             Pile foundationPile = new Pile(Pile.PileType.FOUNDATION, "Foundation " + i, FOUNDATION_GAP);
