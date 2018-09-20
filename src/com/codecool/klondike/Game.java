@@ -1,5 +1,6 @@
 package com.codecool.klondike;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableArray;
@@ -7,8 +8,10 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
@@ -16,11 +19,7 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
-import javafx.scene.control.Button;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class Game extends Pane {
 
@@ -42,6 +41,22 @@ public class Game extends Pane {
     private static double FOUNDATION_GAP = 0;
     private static double TABLEAU_GAP = 30;
 
+    public void addChangeListener(Pile pile) {
+        pile.getCards().addListener(new ListChangeListener<Card>() {
+            @Override
+            public void onChanged(Change<? extends Card> c) {
+                while (c.next()) {
+                    if(c.wasAdded()){
+                        if(isGameWon()){
+                            System.out.println("You won the game, congratulations!!!");
+                            win();
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     private EventHandler<MouseEvent> undoBtnClickedHandler = e -> {
         if (undoCards == null)
             return;
@@ -57,6 +72,11 @@ public class Game extends Pane {
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
         Card card = (Card) e.getSource();
+        if(e.getButton().equals(MouseButton.PRIMARY)) {
+            if (e.getClickCount() == 2) {
+                System.out.println("Double clicked");
+            }
+        }
         if (card.getContainingPile().getPileType() == Pile.PileType.STOCK &&
                 card.getContainingPile().getCards().indexOf(card) == card.getContainingPile().numOfCards() - 1) {
             card.moveToPile(discardPile);
@@ -128,6 +148,7 @@ public class Game extends Pane {
         }
     };
 
+
     public void flipTopCard(Card card) {
         List<Card> contPile = card.getContainingPile().getCards();
         Card topCard = contPile.indexOf(card) > 0 ? contPile.get(contPile.indexOf(card) -1) : null;
@@ -138,7 +159,29 @@ public class Game extends Pane {
 
     public boolean isGameWon() {
         //TODO
-        return false;
+        for (Pile pile : foundationPiles) {
+            if (pile.numOfCards() != 13)
+                return false;
+        }
+        return true;
+    }
+
+    public void win(){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "YOU WON THE GAME!!!");
+        alert.setTitle("YOU WON");
+        alert.setHeaderText("CONGRATULATIONS");
+        ButtonType buttonOk = new ButtonType("OK");
+        ButtonType buttonExit = new ButtonType("Exit");
+        alert.getButtonTypes().setAll(buttonOk, buttonExit);
+        alert.setOnHidden(e -> {
+            if(alert.getResult() == buttonOk){
+                restart();
+            } else if(alert.getResult() == buttonExit){
+                Platform.exit();
+            }
+        });
+        alert.show();
+
     }
 
     public void restart() {
@@ -265,6 +308,7 @@ public class Game extends Pane {
             foundationPile.setBlurredBackground();
             foundationPile.setLayoutX(610 + i * 180);
             foundationPile.setLayoutY(20);
+            addChangeListener(foundationPile);
             foundationPiles.add(foundationPile);
             getChildren().add(foundationPile);
         }
