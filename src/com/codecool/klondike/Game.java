@@ -77,7 +77,13 @@ public class Game extends Pane {
         Card card = (Card) e.getSource();
         if(e.getButton().equals(MouseButton.PRIMARY)) {
             if (e.getClickCount() == 2) {
-                System.out.println("Double clicked");
+                for(Pile pile : foundationPiles){
+                    if(isMoveValid(card, pile)) {
+                        handleValidMove(card, pile);
+                        flipTopCard(card);
+                        card.moveToPile(pile);
+                    }
+                }
             }
         }
         if (card.getContainingPile().getPileType() == Pile.PileType.STOCK &&
