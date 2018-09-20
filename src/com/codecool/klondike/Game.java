@@ -40,6 +40,11 @@ public class Game extends Pane {
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
         Card card = (Card) e.getSource();
+        if(e.getButton().equals(MouseButton.PRIMARY)) {
+            if (e.getClickCount() == 2) {
+                System.out.println("Double clicked");
+            }
+        }
         if (card.getContainingPile().getPileType() == Pile.PileType.STOCK &&
                 card.getContainingPile().getCards().indexOf(card) == card.getContainingPile().numOfCards() - 1) {
             card.moveToPile(discardPile);
@@ -107,14 +112,6 @@ public class Game extends Pane {
         }
     };
 
-    private EventHandler<MouseEvent> onMouseDoubleClickHandler = e -> {
-        Card card = (Card) e.getSource();
-        if(e.getButton().equals(MouseButton.PRIMARY)) {
-            if (e.getClickCount() == 2) {
-                System.out.println("Double clicked");
-            }
-        }
-    };
 
     public void flipTopCard(Card card) {
         List<Card> contPile = card.getContainingPile().getCards();
@@ -144,7 +141,6 @@ public class Game extends Pane {
         card.setOnMouseDragged(onMouseDraggedHandler);
         card.setOnMouseReleased(onMouseReleasedHandler);
         card.setOnMouseClicked(onMouseClickedHandler);
-        card.setOnMouseClicked(onMouseDoubleClickHandler);
     }
 
     public void refillStockFromDiscard() {
