@@ -66,7 +66,7 @@ public class Game extends Pane {
         }
     };
 
-    private EventHandler<MouseEvent> buttonClickedHandler =  e -> {
+    private EventHandler<MouseEvent> restartButtonClickedHandler =  e -> {
         restart();
     };
 
@@ -231,17 +231,19 @@ public class Game extends Pane {
 
     private void addButtons() {
         Button undoBtn = new Button("Undo");
+        undoBtn.setStyle("-fx-background-color: #e4e6e8");
         undoBtn.setLayoutX(1330);
-        undoBtn.setLayoutY(30);
+        undoBtn.setLayoutY(20);
         getChildren().add(undoBtn);
         undoBtn.setOnMouseClicked(undoBtnClickedHandler);
 
 
-        Button button = new Button("Restart");
-        button.setLayoutX(475);
-        button.setLayoutY(20);
-        button.setOnMouseClicked(buttonClickedHandler);
-        getChildren().add(button);
+        Button restartButton = new Button("Restart");
+        restartButton.setStyle("-fx-background-color: #e7af10");
+        restartButton.setLayoutX(475);
+        restartButton.setLayoutY(20);
+        restartButton.setOnMouseClicked(restartButtonClickedHandler);
+        getChildren().add(restartButton);
     }
 
     private void initPiles() {
