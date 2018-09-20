@@ -6,8 +6,10 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableArray;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -30,6 +32,10 @@ public class Game extends Pane {
 
     private double dragStartX, dragStartY;
     private List<Card> draggedCards = FXCollections.observableArrayList();
+    private List<Card> undoCards;
+    private Pile undoPile;
+
+    private Scene scene;
 
     private static double STOCK_GAP = 1;
     private static double FOUNDATION_GAP = 0;
@@ -51,6 +57,18 @@ public class Game extends Pane {
         });
     }
 
+    private EventHandler<MouseEvent> undoBtnClickedHandler = e -> {
+        if (undoCards == null)
+            return;
+        if (undoPile.getTopCard() != null
+                && !undoCards.isEmpty()
+                && undoPile.getPileType() != Pile.PileType.DISCARD)
+            undoPile.getTopCard().flip();
+
+        for (Card card: undoCards)
+            card.moveToPile(undoPile);
+        undoCards.clear();
+    };
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
         Card card = (Card) e.getSource();
@@ -66,6 +84,10 @@ public class Game extends Pane {
             card.setMouseTransparent(false);
             System.out.println("Placed " + card + " to the waste.");
         }
+    };
+
+    private EventHandler<MouseEvent> restartButtonClickedHandler =  e -> {
+        restart();
     };
 
     private EventHandler<MouseEvent> stockReverseCardsHandler = e -> {
@@ -113,7 +135,7 @@ public class Game extends Pane {
             return;
         Card card = (Card) e.getSource();
         Pile pile = getValidIntersectingPile(card, tableauPiles);
-        if(pile == null){
+        if(pile == null && draggedCards.size() == 1){
             pile = getValidIntersectingPile(card, foundationPiles);
         }
         //TODO
@@ -151,11 +173,9 @@ public class Game extends Pane {
         ButtonType buttonOk = new ButtonType("OK");
         ButtonType buttonExit = new ButtonType("Exit");
         alert.getButtonTypes().setAll(buttonOk, buttonExit);
-        //Optional<ButtonType> result = alert.show();
         alert.setOnHidden(e -> {
             if(alert.getResult() == buttonOk){
-                //restart();
-                System.out.println("Yoooooooooooooooooo");
+                restart();
             } else if(alert.getResult() == buttonExit){
                 Platform.exit();
             }
@@ -164,10 +184,23 @@ public class Game extends Pane {
 
     }
 
+    public void restart() {
+        getChildren().clear();
+        deck.clear();
+        discardPile.clear();
+        foundationPiles.clear();
+        tableauPiles.clear();
+        deck = Card.createNewDeck();
+        initPiles();
+        dealCards();
+        addButtons();
+    }
+
     public Game() {
         deck = Card.createNewDeck();
         initPiles();
         dealCards();
+        addButtons();
     }
 
     public void addMouseEventHandlers(Card card) {
@@ -232,10 +265,29 @@ public class Game extends Pane {
             msg = String.format("Placed %s to %s.", card, destPile.getTopCard());
         }
         System.out.println(msg);
+
+        undoPile = card.getContainingPile();
+        undoCards = FXCollections.observableArrayList(draggedCards);
         MouseUtil.slideToDest(draggedCards, destPile);
         draggedCards.clear();
     }
 
+    private void addButtons() {
+        Button undoBtn = new Button("Undo");
+        undoBtn.setStyle("-fx-background-color: #e4e6e8");
+        undoBtn.setLayoutX(1330);
+        undoBtn.setLayoutY(20);
+        getChildren().add(undoBtn);
+        undoBtn.setOnMouseClicked(undoBtnClickedHandler);
+
+
+        Button restartButton = new Button("Restart");
+        restartButton.setStyle("-fx-background-color: #e7af10");
+        restartButton.setLayoutX(475);
+        restartButton.setLayoutY(20);
+        restartButton.setOnMouseClicked(restartButtonClickedHandler);
+        getChildren().add(restartButton);
+    }
 
     private void initPiles() {
         stockPile = new Pile(Pile.PileType.STOCK, "Stock", STOCK_GAP);
